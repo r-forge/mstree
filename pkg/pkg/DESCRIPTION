@@ -1,0 +1,7 @@
+Package: spantree 
+Title: Calculates minnimum spanning tree and related statistics
+Version: 0.1
+Author: Nicholas Lewin-Koh based on code by Benjamin Pfaff 
+Description: Calculates the minimum spanning tree using Primm's algorithm for a matrix using the Euclidean metric or a minimum spanning tree on a dist object for any metric. 
+Maintainer: Nicholas Lewin-Koh <nikko@hailmail.net>
+License: LGPL

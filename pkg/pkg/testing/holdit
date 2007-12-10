@@ -1,0 +1,109 @@
+int wt_cmp(void *x, void *y)
+{
+  vdist *a, *b;
+  a = (vdist *)x;
+  b = (vdist *)y;
+
+  if (a->wt < b->wt)
+    return -1;
+  if (a->wt == b->wt)
+    return 0;
+  return 1;
+}
+
+
+void Tree_dijkstra(Tree T, int source, int *st, double *wt){
+  int v, w;
+  link t;
+  vdist *vd_el;
+  struct fibheap *pq;
+  /* fibElPnt *fep; */
+  void *fep[200];
+ 
+  pq = fh_makeheap();
+  fh_setcmp(pq, wt_cmp);
+  /* fep =malloc(T->V*sizeof(fibElPnt)); */
+  /* fibpnt=malloc(T->V*sizeof(struct fibheap *)); */
+  vd_el=nodew_el(-1,-1.0);
+/*   nd_wts=(struct vdist *) malloc(T->V*sizeof(struct *vdist)); */
+/*   wt = (double *) R_alloc(T->V, sizeof(double)); */
+/*   st = (int *) R_alloc(T->V, sizeof(int)); */
+  Rprintf("1st \n");
+  pq = fh_makeheap();
+  fh_setcmp(pq, wt_cmp);
+  /* PQinit(); */
+  /* priority = wt; */
+  for (v = 0; v < T->V; v++) {
+    st[v] = -1;
+    if(v != source){
+      wt[v] = T->sumWT;
+    /* nd_wts[v] = nodew_el(v,T->sumWT); */
+      vd_el=nodew_el(v,T->sumWT);
+      fep[v]=fh_insert(pq,(void*) vd_el);
+    }
+    else{
+      wt[v] = 0.0;
+
+     fep[v]= fh_insert(pq, (void *)nodew_el(v,0.0));
+    }
+    /* PQinsert(v); */
+  }
+  Rprintf("2nd \n");
+  while (fh_min(pq) != NULL){
+    v = ((vdist *)fh_min(pq))->id;
+    if (wt[v] != T->sumWT){
+      for (t = T->adj[v]; t != NULL; t = t->next){
+	w = t->v;
+        if ((wt[v] + t->wt) < wt[w]){
+          wt[w] = wt[v] + t->wt;
+          vd_el->wt=wt[w];
+          vd_el->id=w;
+	  Rprintf("3rd \n");
+	  vd_el = (vdist *)fh_replacedata(pq,fep[w],(void *) vd_el);
+	  Rprintf("4th \n");
+        /* PQdec(w); */
+          st[w] = v;
+        }
+      }
+    }
+  }
+  /* Clean up */
+
+ fh_deleteheap(pq); 
+ free(fep);
+ free(vd_el);
+}
+
+/* #define GRAPHpfs GRAPHmst */
+/* static int fr[maxV]; */
+/* static double *priority; */
+/* int less(int i, int j) */
+/*   { return priority[i] < priority[j]; } */
+/* #define P (wt[v] + t->wt) */
+/* void GRAPHpfs(Graph G, int st[], double wt[])  { */
+/*   link t; */
+/*   int v, w; */
+/*   PQinit(); */
+/*   priority = wt; */
+/*   for (v = 0; v < G->V; v++){ */
+/*       st[v] = -1; */
+/*       fr[v] = -1; */
+/*   } */
+/*   fr[0] = 0; */
+/*   PQinsert(0); */
+/*   while (!PQempty()) */
+/*     { */
+/*       v = PQdelmin(); st[v] = fr[v]; */
+/*       for (t = G->adj[v]; t != NULL; t = t->next) */
+/*         if (fr[w = t->v] == -1){ */
+/*            wt[w] = P; */
+/*            PQinsert(w); */
+/*            fr[w] = v; */
+/*         } */
+/*         else if ((st[w] == -1) && (P < wt[w])){ */
+/*           wt[w] = P; */
+/*           PQdec(w); */
+/*           fr[w] = v; */
+/*         } */
+/*     } */
+/* } */
